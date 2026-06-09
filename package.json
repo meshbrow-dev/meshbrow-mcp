@@ -1,0 +1,37 @@
+{
+  "name": "@meshbrow/mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for Meshbrow — gives AI agents browser automation capabilities",
+  "main": "dist/index.js",
+  "bin": {
+    "meshbrow-mcp": "dist/index.js"
+  },
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint src/",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["meshbrow", "mcp", "browser", "ai-agent", "automation", "stealth"],
+  "author": "Bytangle Ltd <hello@meshbrow.dev>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meshbrow-dev/meshbrow-mcp.git"
+  },
+  "homepage": "https://meshbrow.dev",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
