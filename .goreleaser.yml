@@ -1,0 +1,79 @@
+project_name: meshbrow-mcp
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: meshbrow-mcp
+    main: ./cmd/mcp-server
+    binary: meshbrow-mcp
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.Version={{.Version}}
+      - -X main.Commit={{.Commit}}
+      - -X main.Date={{.Date}}
+
+archives:
+  - id: default
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+dockers:
+  - image_templates:
+      - "ghcr.io/meshbrow-dev/meshbrow-mcp:{{ .Version }}-amd64"
+    use: buildx
+    dockerfile: Dockerfile.goreleaser
+    build_flag_templates:
+      - "--platform=linux/amd64"
+    goarch: amd64
+  - image_templates:
+      - "ghcr.io/meshbrow-dev/meshbrow-mcp:{{ .Version }}-arm64"
+    use: buildx
+    dockerfile: Dockerfile.goreleaser
+    build_flag_templates:
+      - "--platform=linux/arm64"
+    goarch: arm64
+
+docker_manifests:
+  - name_template: "ghcr.io/meshbrow-dev/meshbrow-mcp:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/meshbrow-dev/meshbrow-mcp:{{ .Version }}-amd64"
+      - "ghcr.io/meshbrow-dev/meshbrow-mcp:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/meshbrow-dev/meshbrow-mcp:latest"
+    image_templates:
+      - "ghcr.io/meshbrow-dev/meshbrow-mcp:{{ .Version }}-amd64"
+      - "ghcr.io/meshbrow-dev/meshbrow-mcp:{{ .Version }}-arm64"
+
+brews:
+  - name: meshbrow-mcp
+    repository:
+      owner: meshbrow-dev
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: "https://meshbrow.dev"
+    description: "MCP server for Meshbrow — gives AI agents stealth browser capabilities"
+    license: "MIT"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
